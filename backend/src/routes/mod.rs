@@ -11,8 +11,8 @@ use axum::{
 };
 use tower_http::{
     cors::CorsLayer,
+    trace::{DefaultMakeSpan, TraceLayer},
     request_id::{MakeRequestUuid, PropagateRequestIdLayer, SetRequestIdLayer},
-    trace::TraceLayer,
 };
 
 use crate::repository::ZoneRepository;
@@ -45,7 +45,17 @@ pub fn router(repository: Arc<dyn ZoneRepository>, cors_origins: &[String]) -> R
         .layer(CorsLayer::new().allow_origin(origins))
         .layer(SetRequestIdLayer::x_request_id(MakeRequestUuid))
         .layer(PropagateRequestIdLayer::x_request_id())
-        .layer(TraceLayer::new_for_http())
+        .layer(
+            TraceLayer::new_for_http()
+                .make_span_with(DefaultMakeSpan::new().include_headers(true))
+                .on_response(|response: &axum::http::Response<_>, latency: std::time::Duration, _span: &tracing::Span| {
+                    tracing::info!(
+                        status = %response.status(),
+                        latency_ms = latency.as_millis(),
+                        "backend_http_response"
+                    );
+                }),
+        )
 }
 
 async fn health() -> axum::Json<serde_json::Value> {

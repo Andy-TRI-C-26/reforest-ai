@@ -32,18 +32,47 @@ pub async fn get_monitoring(
     .map(
         |(period, restored_ndvi, unrestored_ndvi, restored_nbr, unrestored_nbr)| MonitoringPoint {
             period: period.into(),
+            month: 0,
             restored_ndvi,
             unrestored_ndvi,
             restored_nbr,
             unrestored_nbr,
+            baseline_ndvi: 0.68,
         },
     )
     .collect();
+    let monthly_series = (1..=24)
+        .map(|month| {
+            let month = month as f64;
+            let restored = (0.18 + month * 0.018 + (month as u8 % 4) as f64 * 0.006).min(0.68);
+            let unrestored = (0.15 + month * 0.012 + (month as u8 % 5) as f64 * 0.004).min(0.48);
+            MonitoringPoint {
+                period: format!("B{}", month as u8),
+                month: month as u8,
+                restored_ndvi: restored,
+                unrestored_ndvi: unrestored,
+                restored_nbr: -0.32 + month * 0.034,
+                unrestored_nbr: -0.29,
+                baseline_ndvi: 0.68,
+            }
+        })
+        .collect::<Vec<_>>();
+    let last_restored = monthly_series.last().map(|point| point.restored_ndvi).unwrap_or(0.0);
+    let recovery_status = if last_restored < 0.35 {
+        "Stagnan / Kritis"
+    } else if last_restored < 0.55 {
+        "Regenerasi Awal"
+    } else {
+        "Pemulihan Progresif"
+    };
+    let total_impacted_ha = repo.list_zones().await?.iter().map(|z| z.area_ha).sum();
     Ok(Json(MonitoringResponse {
         zone_id,
         series,
-        total_impacted_ha: 818.3,
+        monthly_series,
+        total_impacted_ha,
         canopy_recovery_percent: (zone.ndvi * 100.0).round() as u8,
         peat_health_index: (100.0 + zone.water_table_cm / 2.0).clamp(0.0, 100.0),
+        recovery_status: recovery_status.into(),
     }))
 }

@@ -1,15 +1,19 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CircleGauge, Droplets, ShieldCheck, Wind, X } from 'lucide-react'
-import { zones } from '../../data/zones'
 import PageTitle from '../layout/PageTitle'
 import GambutScene from '../twin/GambutScene'
+import { apiPost } from '../../api'
 
-export default function ForestTwin({ selected }) {
+export default function ForestTwin({ selected, zones }) {
   const [year,setYear]=useState(0)
   const zone=zones.find(z=>z.id===selected)||zones[0]
-  const carbon=year===0?0:year*1.34
-  const water=zone.watertable+year*5.2
-  const canopy=Math.min(92,year*8.4)
+  const [scenario,setScenario]=useState(null)
+  useEffect(()=>{
+    apiPost('/scenarios',{zone_id:selected,year}).then(setScenario).catch(()=>{})
+  },[selected,year])
+  const carbon=scenario?.carbon_sequestration_t_per_ha||0
+  const water=scenario?.water_table_cm||zone.watertable
+  const canopy=scenario?.canopy_recovery_percent||0
   return (
     <div className="module">
       <PageTitle eyebrow="3D SCENARIO MODEL" title="Forest Digital Twin" badge={`Selected: ${zone.id}`}/>

@@ -1,34 +1,35 @@
 import { Droplets, Leaf, Sprout } from 'lucide-react'
-import { zones, severity } from '../../data/zones'
+import useApi from '../../hooks/useApi'
 import PageTitle from '../layout/PageTitle'
 
-export default function EcoRecommend({ selected }) {
+export default function EcoRecommend({ selected, zones }) {
   const zone = zones.find(z=>z.id===selected)||zones[0]
-  const sev = severity(zone.dnbr)
-  let strategy, species, seedlings, actions
-  if(zone.dnbr>0.44) {
-    strategy='Intervensi Hidrologi & Stabilitas Lahan'
-    species=[['Melaleuca cajuputi','Gelam',650],['Shorea balangeran','Belangeran',250]]
-    seedlings='900 bibit / Ha'
-    actions=['Bentuk posko dan blokir aliran kanal segera','Pasang sekat kanal (canal blocking) berlapis','Bantu pemulihan tanah gambut hangus','Tanam Melaleuca cajuputi pada konsentrasi tinggi','Monitor tinggi muka air 2 kali seminggu']
-  } else if(zone.dnbr>=0.27) {
-    strategy='Pengayaan Tanaman dan Pemulihan Kanopi'
-    species=[['Shorea balangeran','Belangeran',400],['Dyera polyphylla','Jelutung Rawa',350]]
-    seedlings='750 bibit / Ha'
-    actions=['Bersihkan kompetitor invasif secara selektif','Lakukan enrichment planting pada rumpang tajuk','Tanam Shorea balangeran dan Dyera polyphylla','Pertahankan blokade kanal secara berkala','Evaluasi survival planting pada bulan ke-3']
-  } else {
-    strategy='Suksesi Alamiah Terbantu'
-    species=[['Melaleuca cajuputi','Gelam',300],['Shorea balangeran','Belangeran',200]]
-    seedlings='500 bibit / Ha'
-    actions=['Pasang rintisan patroli pencegahan api','Hindari pembukaan vegetasi alami','Bantu regenerasi pionir di rumpang kecil','Pertahankan lembab dan blok kanal ringan','Pantau penyebaran vegetasi per kuartal']
+  const {data:recommendation,loading,error}=useApi(`/zones/${selected}/recommendation`)
+  const strategy=recommendation?.strategy||'Memuat rekomendasi'
+  const species=(recommendation?.species||[]).map(s=>[s.latin_name,s.common_name,s.seedlings_per_ha])
+  const seedlings=recommendation?`${recommendation.seedlings_per_ha} bibit / Ha`:'Memuat'
+  const actions=(recommendation?.actions||[]).map(a=>a.action)
+  const exportCSV = () => {
+    if(!recommendation) return
+    const rows = [
+      ['zone_id','zone_name','severity','area_ha','strategy','seedlings_per_ha','water_table_cm'],
+      [zone.id,zone.name,zone.severity,zone.area,strategy,recommendation.seedlings_per_ha,zone.watertable],
+    ]
+    const blob = new Blob([rows.map(row=>row.map(v=>`"${String(v).replaceAll('"','""')}"`).join(',')).join('\n')], {type:'text/csv;charset=utf-8'})
+    const url = URL.createObjectURL(blob)
+    const anchor = document.createElement('a')
+    anchor.href=url; anchor.download=`restoration-${zone.id}.csv`; anchor.click(); URL.revokeObjectURL(url)
+  }
+  const exportPDF = () => {
+    window.print()
   }
   return (
     <div className="module">
       <PageTitle eyebrow="RESTORATION INTELLIGENCE" title="EcoRecommend" badge="Rules Engine Active"/>
       <div className="eco-layout">
         <section className="eco-main card">
-          <div className="card-head"><div><span>STRATEGI UNTUK {zone.id}</span><h2>{strategy}</h2></div><div className="severity-pill" style={{borderColor:sev.color,color:sev.color}}>{sev.label}</div></div>
-          <div className="eco-zone-row"><div><span>Keparahan dNBR</span><b>{zone.dnbr.toFixed(2)}</b></div><div><span>Luas intervensi</span><b>{zone.area} Ha</b></div><div><span>Total kebutuhan</span><b>{Math.round(zone.area*(zone.dnbr>0.44?900:zone.dnbr>=0.27?750:500)).toLocaleString('id-ID')} bibit</b></div></div>
+          <div className="card-head"><div><span>STRATEGI UNTUK {zone.id}</span><h2>{strategy}</h2></div><div className="export-actions"><button onClick={exportCSV}>Ekspor CSV</button><button onClick={exportPDF}>Ringkas PDF</button></div></div>
+          <div className="eco-zone-row"><div><span>Keparahan dNBR</span><b>{zone.dnbr.toFixed(2)}</b></div><div><span>Luas intervensi</span><b>{zone.area} Ha</b></div><div><span>Total kebutuhan</span><b>{recommendation?recommendation.total_seedlings.toLocaleString('id-ID'):'Memuat'} bibit</b></div></div>
           <h3 className="section-label">SPESIES ASLI RAWA GAMBUT</h3>
           <div className="species-grid">{species.map(([latin,indo,count])=><div className="species-card" key={latin}><div className="species-icon"><Leaf size={24}/></div><div><b>{latin}</b><span>{indo}</span></div><strong>{count}/Ha</strong></div>)}</div>
           <h3 className="section-label">TAHAPAN AKSI RESTORASI</h3>
