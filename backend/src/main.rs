@@ -21,7 +21,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let address: SocketAddr = format!("{}:{}", config.host, config.port).parse()?;
     let listener = TcpListener::bind(address).await?;
     tracing::info!(%address, "reforest backend listening");
-    let repository = Arc::new(MockZoneRepository::new());
+    let repository = Arc::new(MockZoneRepository::new().map_err(std::io::Error::other)?);
     let app = match &config.static_dir {
         Some(static_dir) => {
             app_with_origins_and_static(repository, &config.cors_origins, static_dir)

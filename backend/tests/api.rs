@@ -10,7 +10,9 @@ use serde_json::Value;
 use tower::ServiceExt;
 
 fn test_app() -> Router {
-    app(Arc::new(MockZoneRepository::new()))
+    app(Arc::new(
+        MockZoneRepository::new().expect("GeoJSON should load"),
+    ))
 }
 
 #[tokio::test]
@@ -34,7 +36,26 @@ async fn zones_are_geojson_and_complete() {
         .unwrap();
     let json: Value = serde_json::from_slice(&body).unwrap();
     assert_eq!(json["type"], "FeatureCollection");
-    assert_eq!(json["features"].as_array().unwrap().len(), 5);
+    assert!(!json["features"].as_array().unwrap().is_empty());
+}
+
+#[tokio::test]
+async fn model_metadata_is_served_from_backend_data() {
+    let response = test_app()
+        .oneshot(
+            Request::get("/api/model/metadata")
+                .body(Body::empty())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(response.status(), StatusCode::OK);
+    let body = axum::body::to_bytes(response.into_body(), usize::MAX)
+        .await
+        .unwrap();
+    let json: Value = serde_json::from_slice(&body).unwrap();
+    assert_eq!(json["model"], "Random Forest");
+    assert!(json["feature_importance"].is_array());
 }
 
 #[tokio::test]

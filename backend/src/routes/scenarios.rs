@@ -6,7 +6,9 @@ use axum::{
 };
 use serde::{Deserialize, Serialize};
 
-use crate::{error::AppError, repository::ZoneRepository};
+use crate::{error::AppError, models::Severity, repository::ZoneRepository};
+
+const MODEL_METADATA_JSON: &str = include_str!("../../data/model_metadata.json");
 
 #[derive(Debug, Deserialize)]
 pub struct ScenarioRequest {
@@ -49,7 +51,8 @@ pub async fn create_scenario(
     } else {
         (0.35 + year * 0.073).min(1.08)
     };
-    let canal_blocks_visible = request.year >= 2 && zone.dnbr > 0.44;
+    let canal_blocks_visible =
+        request.year >= 2 && matches!(&zone.severity, Severity::High | Severity::ModerateHigh);
     Ok(Json(ScenarioResponse {
         zone_id: request.zone_id,
         year: request.year,
@@ -64,15 +67,7 @@ pub async fn create_scenario(
 }
 
 pub async fn model_metadata() -> Json<serde_json::Value> {
-    Json(serde_json::json!({
-        "model": "Random Forest", "accuracy_percent": 89.4, "validation": "10-Fold CV", "confidence_score": 0.894,
-        "feature_importance": [
-            {"feature": "dNBR", "importance": 0.92},
-            {"feature": "Kedalaman Gambut", "importance": 0.76},
-            {"feature": "Jarak dari Kanal", "importance": 0.61},
-            {"feature": "Tinggi Muka Air Tanah", "importance": 0.54}
-        ]
-    }))
+    Json(serde_json::from_str(MODEL_METADATA_JSON).expect("model metadata must be valid JSON"))
 }
 
 pub async fn layer_metadata(

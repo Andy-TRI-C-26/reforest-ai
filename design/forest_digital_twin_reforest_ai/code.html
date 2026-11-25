@@ -1,0 +1,283 @@
+<!DOCTYPE html><html lang="id"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forest Digital Twin — REFOREST AI</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">/** @type {import('tailwindcss').Config} */
+globalThis.tailwind = globalThis.tailwind || {};
+globalThis.tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'primary': '#0F5132',
+        'on-primary': '#FFFFFF',
+        'primary-container': '#B0F1C7',
+        'on-primary-container': '#002111',
+        'forest-emerald': '#10B981',
+        'on-forest-emerald': '#002113',
+        'secondary': '#006398',
+        'on-secondary': '#FFFFFF',
+        'secondary-container': '#CCE5FF',
+        'on-secondary-container': '#001D31',
+        'hydrology-cyan': '#0284C7',
+        'severity-amber': '#F59E0B',
+        'severity-orange': '#EA580C',
+        'severity-crimson': '#EF4444',
+        'error': '#B91A24',
+        'on-error': '#FFFFFF',
+        'error-container': '#FFDAD7',
+        'on-error-container': '#410004',
+        'warning-container': '#FFEEDE',
+        'on-warning-container': '#472A00',
+        'surface': '#F8FAFC',
+        'on-surface': '#0F172A',
+        'surface-container-lowest': '#FFFFFF',
+        'surface-container-low': '#F1F5F9',
+        'surface-container': '#E2E8F0',
+        'surface-container-high': '#CBD5E1',
+        'on-surface-variant': '#3F465C',
+        'outline': '#6F778E',
+        'outline-variant': '#CBD5E1',
+        'map-surface': '#0F172A',
+        'on-map-surface': '#F8FAFC',
+        'inspector-surface': '#1E293B',
+        'on-inspector-surface': '#F8FAFC',
+        'inspector-border': '#334155',
+        'inspector-muted': '#94A3B8',
+      },
+      borderRadius: {
+        'sm': '6px',
+        'DEFAULT': '8px',
+        'md': '12px',
+        'lg': '16px',
+        'full': '9999px',
+      },
+      spacing: {
+        'gutter-xs': '4px',
+        'gutter-sm': '8px',
+        'gutter-md': '16px',
+        'gutter-lg': '24px',
+        'gutter-xl': '32px',
+        'section': '32px',
+        'page-margin': '24px',
+      },
+      fontFamily: {
+        'display': ['"Archivo"', 'sans-serif'],
+        'headline': ['"Archivo"', 'sans-serif'],
+        'title': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'body': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'label': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'mono': ['"JetBrains Mono"', 'monospace'],
+      },
+      fontSize: {
+        'display-lg': ['36px', { lineHeight: '42px', letterSpacing: '-0.5px', fontWeight: '700' }],
+        'display-lg-mobile': ['28px', { lineHeight: '34px', letterSpacing: '-0.25px', fontWeight: '700' }],
+        'headline-lg': ['24px', { lineHeight: '30px', letterSpacing: '-0.25px', fontWeight: '700' }],
+        'headline-md': ['18px', { lineHeight: '24px', letterSpacing: '-0.1px', fontWeight: '600' }],
+        'title-lg': ['16px', { lineHeight: '22px', letterSpacing: '0px', fontWeight: '600' }],
+        'title-md': ['14px', { lineHeight: '20px', letterSpacing: '0px', fontWeight: '600' }],
+        'body-md': ['14px', { lineHeight: '21px', letterSpacing: '0px', fontWeight: '400' }],
+        'body-sm': ['12px', { lineHeight: '18px', letterSpacing: '0px', fontWeight: '400' }],
+        'label-lg': ['13px', { lineHeight: '18px', letterSpacing: '0.1px', fontWeight: '600' }],
+        'label-sm': ['11px', { lineHeight: '14px', letterSpacing: '0.2px', fontWeight: '600' }],
+        'mono-lg': ['20px', { lineHeight: '26px', letterSpacing: '-0.2px', fontWeight: '700' }],
+        'mono-md': ['13px', { lineHeight: '18px', letterSpacing: '0px', fontWeight: '500' }],
+        'mono-sm': ['11px', { lineHeight: '14px', letterSpacing: '0px', fontWeight: '500' }],
+      },
+      transitionDuration: {
+        'state-change': '120ms',
+        'drawer-enter': '220ms',
+        'drawer-exit': '150ms',
+      },
+      transitionDelay: {
+        'state-change': '0ms',
+        'drawer-enter': '0ms',
+        'drawer-exit': '0ms',
+      },
+      transitionTimingFunction: {
+        'state-change': 'ease-out',
+        'drawer-enter': 'cubic-bezier(0.2, 0, 0, 1)',
+        'drawer-exit': 'cubic-bezier(0.3, 0, 1, 1)',
+      },
+    },
+  },
+};
+if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
+</script>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&amp;family=JetBrains+Mono:wght@500;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet">
+  <style>
+    .material-symbols-outlined { display: inline-block; width: 1em; height: 1em; line-height: 1 !important; box-sizing: content-box; overflow: hidden; white-space: nowrap; direction: ltr; vertical-align: middle; }
+  </style>
+</head>
+<body class="bg-map-surface text-on-map-surface font-body antialiased">
+  <div class="min-h-[1024px] flex flex-col" data-stitch-vh="min-h-[1024px]===min-h-screen">
+
+    <!-- SHARED TOP NAVIGATION BAR -->
+    <header class="sticky top-0 z-30 bg-surface-container-lowest text-on-surface border-b border-outline-variant px-gutter-lg py-gutter-sm">
+      <div class="flex flex-wrap items-center justify-between gap-gutter-md">
+        <div class="flex items-center gap-gutter-md">
+          <div class="flex items-center gap-gutter-sm">
+            <div class="w-9 h-9 rounded-sm bg-primary text-on-primary flex items-center justify-center">
+              <span class="material-symbols-outlined text-[20px]" aria-hidden="true">forest</span>
+            </div>
+            <div>
+              <span data-design-text-token="title-lg" class="font-headline text-title-lg text-on-surface tracking-tight block">REFOREST AI</span>
+              <span data-design-text-token="label-sm" class="font-label text-label-sm text-on-surface-variant block">Intelijen Restorasi Gambut</span>
+            </div>
+          </div>
+          <span class="hidden md:inline-flex items-center gap-gutter-xs px-gutter-sm py-gutter-xs rounded-full bg-surface-container-low border border-outline-variant text-on-surface font-label text-label-sm">
+            <span class="material-symbols-outlined text-primary text-[15px]" aria-hidden="true">location_on</span>
+            <span data-design-text-token="label-sm">KHDTK Tumbang Nusa, Pulang Pisau</span>
+          </span>
+        </div>
+
+        <nav aria-label="Modul REFOREST AI">
+          <div data-component-id="tabs-with-icon" data-component-type="tabs" data-component-variant="with-icon" class="bg-surface-container-low p-gutter-xs rounded border border-outline-variant inline-flex">
+            <div role="tablist" aria-label="Modul Utama" class="flex flex-wrap items-center gap-gutter-xs">
+              <a href="../geospatial-map/GeospatialMap.html" role="tab" aria-selected="false" class="inline-flex items-center gap-gutter-xs px-gutter-md py-gutter-xs rounded-sm text-on-surface-variant hover:bg-surface-container font-label text-label-lg transition-colors duration-state-change">
+                <span class="material-symbols-outlined text-[18px]" aria-hidden="true">map</span>
+                <span data-design-text-token="label-lg">Geospatial Map</span>
+              </a>
+              <a href="../eco-recommend/EcoRecommend.html" role="tab" aria-selected="false" class="inline-flex items-center gap-gutter-xs px-gutter-md py-gutter-xs rounded-sm text-on-surface-variant hover:bg-surface-container font-label text-label-lg transition-colors duration-state-change">
+                <span class="material-symbols-outlined text-[18px]" aria-hidden="true">eco</span>
+                <span data-design-text-token="label-lg">EcoRecommend</span>
+              </a>
+              <a href="../green-monitor/GreenMonitor.html" role="tab" aria-selected="false" class="inline-flex items-center gap-gutter-xs px-gutter-md py-gutter-xs rounded-sm text-on-surface-variant hover:bg-surface-container font-label text-label-lg transition-colors duration-state-change">
+                <span class="material-symbols-outlined text-[18px]" aria-hidden="true">monitoring</span>
+                <span data-design-text-token="label-lg">Green Monitor</span>
+              </a>
+              <a href="../forest-digital-twin/ForestDigitalTwin.html" role="tab" aria-selected="true" class="inline-flex items-center gap-gutter-xs px-gutter-md py-gutter-xs rounded-sm bg-primary text-on-primary font-label text-label-lg transition-colors duration-state-change">
+                <span class="material-symbols-outlined text-[18px]" aria-hidden="true">view_in_ar</span>
+                <span data-design-text-token="label-lg">Forest Digital Twin</span>
+              </a>
+            </div>
+          </div>
+        </nav>
+
+        <div class="flex items-center gap-gutter-sm">
+          <label for="event-filter" class="sr-only">Filter Periode Kebakaran</label>
+          <div class="inline-flex items-center gap-gutter-xs bg-surface-container-low border border-outline-variant rounded-sm px-gutter-sm py-gutter-xs">
+            <span class="material-symbols-outlined text-on-surface-variant text-[16px]" aria-hidden="true">calendar_month</span>
+            <select id="event-filter" class="bg-transparent border-0 p-0 pr-gutter-lg font-label text-label-sm text-on-surface focus:ring-0">
+              <option value="post-fire">Pascabakar (Nov 2023) vs Pra-Kebakaran</option>
+              <option value="pre-fire">Pra-Kebakaran (Agu 2023)</option>
+              <option value="recovery">Pemulihan +12 Bln (Nov 2024)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- 3D DIGITAL TWIN VIEWPORT -->
+    <main class="relative flex-1 flex flex-col justify-between bg-map-surface min-h-[700px] overflow-hidden">
+      <img src="https://lh3.googleusercontent.com/aida/ALJJyrCB5FrKsbquTJV05uC9EMEgP7kYp9ItnrZ1t2XC6Pl5QjIviAkFE8naNIBfUCzjzPOfay0OQ_1xdBUUSLLUSc-w63_YoteSmWbhUwExvXD0PKkCCvMnl1mGdGCD_hGc4aIzEM0Tnny54SKXGQ5IgyGm5Vq9X2mrNWjmgE0ji0HmvUrU6SGOd98d8Eqg1vwWmn-7NqntttbmyK-Zxleez5c7uxWq_4Y5Xur294aGD7iCr8AsQCV0nie0xzg" alt="Visualisasi 3D Digital Twin topografi lahan gambut dan tutupan hutan KHDTK Tumbang Nusa" class="absolute inset-0 w-full h-full object-cover opacity-90">
+
+      <!-- Top HUD Overlay: Telemetry & Phase Status -->
+      <div class="relative z-20 p-gutter-lg flex flex-wrap items-start justify-between gap-gutter-md">
+        <div class="bg-inspector-surface/95 border border-inspector-border rounded p-gutter-md max-w-md flex flex-col gap-gutter-xs">
+          <div class="flex items-center gap-gutter-xs">
+            <span class="w-2.5 h-2.5 rounded-full bg-forest-emerald" aria-hidden="true"></span>
+            <span data-design-text-token="label-sm" class="font-label text-label-sm text-forest-emerald uppercase">Simulasi 3D Topografi Gambut · KHDTK Tumbang Nusa</span>
+          </div>
+          <h1 id="twin-phase-title" data-design-text-token="headline-md" class="font-headline text-headline-md text-on-inspector-surface">Tahun 5 · Sekat Kanal Aktif &amp; Kanopi Muda</h1>
+          <p id="twin-phase-desc" data-design-text-token="body-sm" class="font-body text-body-sm text-inspector-muted">
+            Muka air tanah naik signifikan di belakang 6 sekat kanal; tegakan Shorea balangeran mencapai tinggi rata-rata 4.2 meter.
+          </p>
+        </div>
+
+        <!-- Real-time Simulated Ecological Metrics -->
+        <div class="grid grid-cols-3 gap-gutter-sm">
+          <div class="bg-inspector-surface/95 border border-inspector-border rounded p-gutter-md flex flex-col gap-gutter-xs">
+            <span data-design-text-token="label-sm" class="font-label text-label-sm text-inspector-muted uppercase">Tinggi Muka Air</span>
+            <span id="metric-tmat" data-design-text-token="mono-lg" class="font-mono text-mono-lg text-hydrology-cyan tabular-nums">-28 cm</span>
+          </div>
+          <div class="bg-inspector-surface/95 border border-inspector-border rounded p-gutter-md flex flex-col gap-gutter-xs">
+            <span data-design-text-token="label-sm" class="font-label text-label-sm text-inspector-muted uppercase">Tutupan Kanopi</span>
+            <span id="metric-canopy" data-design-text-token="mono-lg" class="font-mono text-mono-lg text-forest-emerald tabular-nums">58%</span>
+          </div>
+          <div class="bg-inspector-surface/95 border border-inspector-border rounded p-gutter-md flex flex-col gap-gutter-xs">
+            <span data-design-text-token="label-sm" class="font-label text-label-sm text-inspector-muted uppercase">Serapan Karbon</span>
+            <span id="metric-carbon" data-design-text-token="mono-lg" class="font-mono text-mono-lg text-on-inspector-surface tabular-nums">41.5 tC/Ha</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTTOM SCENARIO & TIMELINE CONTROL BAR -->
+      <section aria-label="Kontrol Skenario dan Lini Masa 3D" class="relative z-20 p-gutter-lg">
+        <div class="bg-inspector-surface/95 border border-inspector-border rounded p-gutter-lg flex flex-col lg:flex-row lg:items-center justify-between gap-gutter-lg">
+
+          <!-- Scenario Selector -->
+          <div class="flex flex-col gap-gutter-xs">
+            <span data-design-text-token="label-sm" class="font-label text-label-sm text-inspector-muted uppercase">Skenario Intervensi</span>
+            <div class="inline-flex bg-map-surface p-gutter-xs rounded-sm border border-inspector-border gap-gutter-xs">
+              <button id="scen-none" type="button" onclick="setScenario(&#39;none&#39;)" class="px-gutter-md py-gutter-xs rounded-sm font-label text-label-lg text-inspector-muted hover:text-on-inspector-surface transition-colors duration-state-change">
+                Tanpa Intervensi
+              </button>
+              <button id="scen-rewet" type="button" onclick="setScenario(&#39;rewet&#39;)" class="px-gutter-md py-gutter-xs rounded-sm font-label text-label-lg bg-forest-emerald text-on-forest-emerald transition-colors duration-state-change">
+                Rewetting + Penanaman Spesies Gambut
+              </button>
+            </div>
+          </div>
+
+          <!-- Timeline Slider (Year 0 to Year 10) -->
+          <div class="flex-1 flex flex-col gap-gutter-xs">
+            <div class="flex items-center justify-between">
+              <label for="year-slider" data-design-text-token="label-sm" class="font-label text-label-sm text-inspector-muted uppercase">Proyeksi Lini Masa Restorasi</label>
+              <span id="year-label" data-design-text-token="mono-md" class="font-mono text-mono-md text-forest-emerald tabular-nums">Tahun 5</span>
+            </div>
+            <input id="year-slider" type="range" min="0" max="10" value="5" step="1" class="w-full accent-forest-emerald h-2 bg-map-surface rounded-full cursor-pointer" oninput="updateTimeline(this.value)">
+            <div class="flex justify-between font-mono text-mono-sm text-inspector-muted tabular-nums">
+              <span>Thn 0 (Pascabakar)</span>
+              <span>Thn 2 (Sekat Kanal)</span>
+              <span>Thn 5 (Kanopi Muda)</span>
+              <span>Thn 10 (Hutan Pulih)</span>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    let currentScenario = 'rewet';
+    function setScenario(s) {
+      currentScenario = s;
+      const btnNone = document.getElementById('scen-none');
+      const btnRewet = document.getElementById('scen-rewet');
+      if (s === 'none') {
+        btnNone.className = 'px-gutter-md py-gutter-xs rounded-sm font-label text-label-lg bg-error text-on-error transition-colors duration-state-change';
+        btnRewet.className = 'px-gutter-md py-gutter-xs rounded-sm font-label text-label-lg text-inspector-muted hover:text-on-inspector-surface transition-colors duration-state-change';
+      } else {
+        btnRewet.className = 'px-gutter-md py-gutter-xs rounded-sm font-label text-label-lg bg-forest-emerald text-on-forest-emerald transition-colors duration-state-change';
+        btnNone.className = 'px-gutter-md py-gutter-xs rounded-sm font-label text-label-lg text-inspector-muted hover:text-on-inspector-surface transition-colors duration-state-change';
+      }
+      updateTimeline(document.getElementById('year-slider').value);
+    }
+
+    function updateTimeline(year) {
+      const y = parseInt(year, 10);
+      document.getElementById('year-label').textContent = 'Tahun ' + y;
+      if (currentScenario === 'none') {
+        document.getElementById('metric-tmat').textContent = (-88 + y * 1) + ' cm';
+        document.getElementById('metric-canopy').textContent = Math.min(24, 6 + y * 2) + '%';
+        document.getElementById('metric-carbon').textContent = (12.0 + y * 0.8).toFixed(1) + ' tC/Ha';
+        document.getElementById('twin-phase-title').textContent = 'Tahun ' + y + ' · Tanpa Intervensi (Risiko Tinggi)';
+        document.getElementById('twin-phase-desc').textContent = 'Lahan gambut tetap kering dengan dominasi pakis dan semak belukar yang rentan kebakaran ulang.';
+      } else {
+        document.getElementById('metric-tmat').textContent = Math.min(-15, -88 + y * 12) + ' cm';
+        document.getElementById('metric-canopy').textContent = Math.min(88, 6 + y * 10) + '%';
+        document.getElementById('metric-carbon').textContent = (12.0 + y * 5.9).toFixed(1) + ' tC/Ha';
+        const phase = y < 2 ? 'Fase Pascabakar & Konstruksi Sekat Kanal' : (y < 6 ? 'Sekat Kanal Aktif & Kanopi Muda' : 'Hutan Gambut Sekunder Pulih');
+        document.getElementById('twin-phase-title').textContent = 'Tahun ' + y + ' · ' + phase;
+        document.getElementById('twin-phase-desc').textContent = y < 2
+          ? 'Pembangunan sekat kanal kayu ulin mulai menahan aliran air permukaan di Blok Kanal Timur.'
+          : 'Muka air tanah stabil; tegakan Shorea balangeran dan Gelam membentuk kanopi hijau bertingkat.';
+      }
+    }
+  </script>
+
+
+</body></html>

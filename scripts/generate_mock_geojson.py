@@ -32,16 +32,21 @@ def severity(dnbr):
 def main():
     features = []
     for zone_id, name, area, dnbr, ndvi, peat_depth, water_table, ring in ZONES:
+        nbr_pre = 0.72
+        nbr_post = round(nbr_pre - dnbr, 2)
         features.append({
             "type": "Feature",
             "properties": {
                 "id": zone_id,
                 "name": name,
                 "area_ha": area,
+                "nbr_pre": nbr_pre,
+                "nbr_post": nbr_post,
                 "dnbr": dnbr,
                 "ndvi": ndvi,
                 "severity": severity(dnbr),
                 "peat_depth_m": peat_depth,
+                "canal_distance_m": 500.0,
                 "water_table_cm": water_table,
             },
             "geometry": {"type": "Polygon", "coordinates": [ring]},
@@ -53,7 +58,7 @@ def main():
         "crs": {"type": "name", "properties": {"name": "urn:ogc:def:crs:EPSG::4326"}},
         "features": features,
     }
-    target = Path(__file__).resolve().parents[1] / "Frontend" / "public" / "data" / "tumbang-nusa-zones.geojson"
+    target = Path(__file__).resolve().parents[1] / "backend" / "data" / "tumbang-nusa-zones.geojson"
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(output, indent=2), encoding="utf-8")
     print(target)

@@ -1,0 +1,74 @@
+{
+  "model": "Random Forest",
+  "status": "trained",
+  "accuracy_percent": 100.0,
+  "validation": "Stratified 25% holdout against dNBR-threshold proxy labels",
+  "training_target": "dNBR severity thresholds; not field-verified labels",
+  "confidence_score": 0.9898,
+  "class_labels": [
+    "Tidak Terbakar",
+    "Keparahan Rendah",
+    "Keparahan Sedang-Rendah",
+    "Keparahan Sedang-Tinggi",
+    "Keparahan Tinggi"
+  ],
+  "confusion_matrix": [
+    [
+      1456,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      318,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      264,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      239,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      223
+    ]
+  ],
+  "feature_importance": [
+    {
+      "feature": "dNBR",
+      "importance": 0.731596
+    },
+    {
+      "feature": "NDVI_pre",
+      "importance": 0.008449
+    },
+    {
+      "feature": "NDVI_post",
+      "importance": 0.011728
+    },
+    {
+      "feature": "NBR_pre",
+      "importance": 0.128509
+    },
+    {
+      "feature": "NBR_post",
+      "importance": 0.119717
+    }
+  ]
+}

@@ -52,7 +52,7 @@ impl Zone {
             return Err("NDVI dan NBR harus berada pada rentang -1 sampai 1".into());
         }
         if !self.dnbr.is_finite()
-            || self.dnbr < 0.0
+            || !(-2.0..=2.0).contains(&self.dnbr)
             || !self.peat_depth_m.is_finite()
             || self.peat_depth_m < 0.0
             || !self.canal_distance_m.is_finite()

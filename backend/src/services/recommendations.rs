@@ -1,8 +1,8 @@
-use crate::models::{Recommendation, RestorationAction, SpeciesRecommendation, Zone};
+use crate::models::{Recommendation, RestorationAction, Severity, SpeciesRecommendation, Zone};
 
 pub fn recommendation(zone: &Zone) -> Recommendation {
-    let (strategy, seedlings_per_ha, species, actions) = if zone.dnbr >= 0.44 {
-        (
+    let (strategy, seedlings_per_ha, species, actions) = match &zone.severity {
+        Severity::High | Severity::ModerateHigh => (
             "Intervensi Hidrologi & Stabilitas Lahan",
             900,
             vec![
@@ -29,9 +29,8 @@ pub fn recommendation(zone: &Zone) -> Recommendation {
                     target_year: 1,
                 },
             ],
-        )
-    } else if zone.dnbr >= 0.27 {
-        (
+        ),
+        Severity::ModerateLow => (
             "Enrichment Planting",
             750,
             vec![
@@ -58,9 +57,8 @@ pub fn recommendation(zone: &Zone) -> Recommendation {
                     target_year: 1,
                 },
             ],
-        )
-    } else {
-        (
+        ),
+        Severity::Low | Severity::Unburned => (
             "Assisted Natural Regeneration",
             500,
             vec![
@@ -87,7 +85,7 @@ pub fn recommendation(zone: &Zone) -> Recommendation {
                     target_year: 2,
                 },
             ],
-        )
+        ),
     };
     Recommendation {
         zone_id: zone.id.clone(),

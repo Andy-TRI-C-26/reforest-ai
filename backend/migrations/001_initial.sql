@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS zones (
     area_ha DOUBLE PRECISION NOT NULL CHECK (area_ha > 0),
     nbr_pre DOUBLE PRECISION NOT NULL,
     nbr_post DOUBLE PRECISION NOT NULL,
-    dnbr DOUBLE PRECISION NOT NULL CHECK (dnbr >= 0),
+    dnbr DOUBLE PRECISION NOT NULL CHECK (dnbr BETWEEN -2 AND 2),
     ndvi DOUBLE PRECISION NOT NULL,
     peat_depth_m DOUBLE PRECISION NOT NULL CHECK (peat_depth_m >= 0),
     canal_distance_m DOUBLE PRECISION NOT NULL CHECK (canal_distance_m >= 0),

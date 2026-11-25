@@ -92,7 +92,7 @@ def main():
         "features": features,
     }
 
-    target = Path(__file__).resolve().parents[1] / "frontend" / "public" / "data" / "tumbang-nusa-zones.geojson"
+    target = Path(__file__).resolve().parents[1] / "backend" / "data" / "tumbang-nusa-zones.geojson"
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(output, indent=2), encoding="utf-8")
     print(f"Berhasil menghasilkan {num_zones} zona acak ke: {target}")

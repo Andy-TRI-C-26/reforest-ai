@@ -1,11 +1,24 @@
-FROM node:22-bookworm-slim AS builder
+FROM node:22-bookworm-slim AS deps
 WORKDIR /app
 COPY package.json package-lock.json* ./
 RUN npm ci
+
+FROM node:22-bookworm-slim AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npm run build
 
-FROM nginx:1.27-alpine
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=builder /app/dist /usr/share/nginx/html
-EXPOSE 80
+FROM node:22-bookworm-slim AS runner
+WORKDIR /app
+ENV NODE_ENV=production \
+    PORT=3000 \
+    HOSTNAME=0.0.0.0 \
+    BACKEND_URL=http://backend:8080
+RUN useradd --system --uid 1001 nextjs
+COPY --from=builder --chown=nextjs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs /app/public ./public
+USER nextjs
+EXPOSE 3000
+CMD ["node", "server.js"]

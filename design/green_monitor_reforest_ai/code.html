@@ -1,0 +1,364 @@
+<!DOCTYPE html><html lang="id"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Green Monitor — REFOREST AI</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">/** @type {import('tailwindcss').Config} */
+globalThis.tailwind = globalThis.tailwind || {};
+globalThis.tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'primary': '#0F5132',
+        'on-primary': '#FFFFFF',
+        'primary-container': '#B0F1C7',
+        'on-primary-container': '#002111',
+        'forest-emerald': '#10B981',
+        'on-forest-emerald': '#002113',
+        'secondary': '#006398',
+        'on-secondary': '#FFFFFF',
+        'secondary-container': '#CCE5FF',
+        'on-secondary-container': '#001D31',
+        'hydrology-cyan': '#0284C7',
+        'severity-amber': '#F59E0B',
+        'severity-orange': '#EA580C',
+        'severity-crimson': '#EF4444',
+        'error': '#B91A24',
+        'on-error': '#FFFFFF',
+        'error-container': '#FFDAD7',
+        'on-error-container': '#410004',
+        'warning-container': '#FFEEDE',
+        'on-warning-container': '#472A00',
+        'surface': '#F8FAFC',
+        'on-surface': '#0F172A',
+        'surface-container-lowest': '#FFFFFF',
+        'surface-container-low': '#F1F5F9',
+        'surface-container': '#E2E8F0',
+        'surface-container-high': '#CBD5E1',
+        'on-surface-variant': '#3F465C',
+        'outline': '#6F778E',
+        'outline-variant': '#CBD5E1',
+        'map-surface': '#0F172A',
+        'on-map-surface': '#F8FAFC',
+        'inspector-surface': '#1E293B',
+        'on-inspector-surface': '#F8FAFC',
+        'inspector-border': '#334155',
+        'inspector-muted': '#94A3B8',
+      },
+      borderRadius: {
+        'sm': '6px',
+        'DEFAULT': '8px',
+        'md': '12px',
+        'lg': '16px',
+        'full': '9999px',
+      },
+      spacing: {
+        'gutter-xs': '4px',
+        'gutter-sm': '8px',
+        'gutter-md': '16px',
+        'gutter-lg': '24px',
+        'gutter-xl': '32px',
+        'section': '32px',
+        'page-margin': '24px',
+      },
+      fontFamily: {
+        'display': ['"Archivo"', 'sans-serif'],
+        'headline': ['"Archivo"', 'sans-serif'],
+        'title': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'body': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'label': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'mono': ['"JetBrains Mono"', 'monospace'],
+      },
+      fontSize: {
+        'display-lg': ['36px', { lineHeight: '42px', letterSpacing: '-0.5px', fontWeight: '700' }],
+        'display-lg-mobile': ['28px', { lineHeight: '34px', letterSpacing: '-0.25px', fontWeight: '700' }],
+        'headline-lg': ['24px', { lineHeight: '30px', letterSpacing: '-0.25px', fontWeight: '700' }],
+        'headline-md': ['18px', { lineHeight: '24px', letterSpacing: '-0.1px', fontWeight: '600' }],
+        'title-lg': ['16px', { lineHeight: '22px', letterSpacing: '0px', fontWeight: '600' }],
+        'title-md': ['14px', { lineHeight: '20px', letterSpacing: '0px', fontWeight: '600' }],
+        'body-md': ['14px', { lineHeight: '21px', letterSpacing: '0px', fontWeight: '400' }],
+        'body-sm': ['12px', { lineHeight: '18px', letterSpacing: '0px', fontWeight: '400' }],
+        'label-lg': ['13px', { lineHeight: '18px', letterSpacing: '0.1px', fontWeight: '600' }],
+        'label-sm': ['11px', { lineHeight: '14px', letterSpacing: '0.2px', fontWeight: '600' }],
+        'mono-lg': ['20px', { lineHeight: '26px', letterSpacing: '-0.2px', fontWeight: '700' }],
+        'mono-md': ['13px', { lineHeight: '18px', letterSpacing: '0px', fontWeight: '500' }],
+        'mono-sm': ['11px', { lineHeight: '14px', letterSpacing: '0px', fontWeight: '500' }],
+      },
+      transitionDuration: {
+        'state-change': '120ms',
+        'drawer-enter': '220ms',
+        'drawer-exit': '150ms',
+      },
+      transitionDelay: {
+        'state-change': '0ms',
+        'drawer-enter': '0ms',
+        'drawer-exit': '0ms',
+      },
+      transitionTimingFunction: {
+        'state-change': 'ease-out',
+        'drawer-enter': 'cubic-bezier(0.2, 0, 0, 1)',
+        'drawer-exit': 'cubic-bezier(0.3, 0, 1, 1)',
+      },
+    },
+  },
+};
+if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
+</script>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&amp;family=JetBrains+Mono:wght@500;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet">
+  <style>
+    .material-symbols-outlined { display: inline-block; width: 1em; height: 1em; line-height: 1 !important; box-sizing: content-box; overflow: hidden; white-space: nowrap; direction: ltr; vertical-align: middle; }
+  </style>
+</head>
+<body class="bg-surface text-on-surface font-body antialiased">
+  <div class="min-h-[1024px] flex flex-col" data-stitch-vh="min-h-[1024px]===min-h-screen">
+
+    <!-- SHARED TOP NAVIGATION BAR -->
+    <header class="sticky top-0 z-30 bg-surface-container-lowest text-on-surface border-b border-outline-variant px-gutter-lg py-gutter-sm">
+      <div class="flex flex-wrap items-center justify-between gap-gutter-md">
+        <div class="flex items-center gap-gutter-md">
+          <div class="flex items-center gap-gutter-sm">
+            <div class="w-9 h-9 rounded-sm bg-primary text-on-primary flex items-center justify-center">
+              <span class="material-symbols-outlined text-[20px]" aria-hidden="true">forest</span>
+            </div>
+            <div>
+              <span data-design-text-token="title-lg" class="font-headline text-title-lg text-on-surface tracking-tight block">REFOREST AI</span>
+              <span data-design-text-token="label-sm" class="font-label text-label-sm text-on-surface-variant block">Intelijen Restorasi Gambut</span>
+            </div>
+          </div>
+          <span class="hidden md:inline-flex items-center gap-gutter-xs px-gutter-sm py-gutter-xs rounded-full bg-surface-container-low border border-outline-variant text-on-surface font-label text-label-sm">
+            <span class="material-symbols-outlined text-primary text-[15px]" aria-hidden="true">location_on</span>
+            <span data-design-text-token="label-sm">KHDTK Tumbang Nusa, Pulang Pisau</span>
+          </span>
+        </div>
+
+        <nav aria-label="Modul REFOREST AI">
+          <div data-component-id="tabs-with-icon" data-component-type="tabs" data-component-variant="with-icon" class="bg-surface-container-low p-gutter-xs rounded border border-outline-variant inline-flex">
+            <div role="tablist" aria-label="Modul Utama" class="flex flex-wrap items-center gap-gutter-xs">
+              <a href="../geospatial-map/GeospatialMap.html" role="tab" aria-selected="false" class="inline-flex items-center gap-gutter-xs px-gutter-md py-gutter-xs rounded-sm text-on-surface-variant hover:bg-surface-container font-label text-label-lg transition-colors duration-state-change">
+                <span class="material-symbols-outlined text-[18px]" aria-hidden="true">map</span>
+                <span data-design-text-token="label-lg">Geospatial Map</span>
+              </a>
+              <a href="../eco-recommend/EcoRecommend.html" role="tab" aria-selected="false" class="inline-flex items-center gap-gutter-xs px-gutter-md py-gutter-xs rounded-sm text-on-surface-variant hover:bg-surface-container font-label text-label-lg transition-colors duration-state-change">
+                <span class="material-symbols-outlined text-[18px]" aria-hidden="true">eco</span>
+                <span data-design-text-token="label-lg">EcoRecommend</span>
+              </a>
+              <a href="../green-monitor/GreenMonitor.html" role="tab" aria-selected="true" class="inline-flex items-center gap-gutter-xs px-gutter-md py-gutter-xs rounded-sm bg-primary text-on-primary font-label text-label-lg transition-colors duration-state-change">
+                <span class="material-symbols-outlined text-[18px]" aria-hidden="true">monitoring</span>
+                <span data-design-text-token="label-lg">Green Monitor</span>
+              </a>
+              <a href="../forest-digital-twin/ForestDigitalTwin.html" role="tab" aria-selected="false" class="inline-flex items-center gap-gutter-xs px-gutter-md py-gutter-xs rounded-sm text-on-surface-variant hover:bg-surface-container font-label text-label-lg transition-colors duration-state-change">
+                <span class="material-symbols-outlined text-[18px]" aria-hidden="true">view_in_ar</span>
+                <span data-design-text-token="label-lg">Forest Digital Twin</span>
+              </a>
+            </div>
+          </div>
+        </nav>
+
+        <div class="flex items-center gap-gutter-sm">
+          <label for="event-filter" class="sr-only">Filter Periode Kebakaran</label>
+          <div class="inline-flex items-center gap-gutter-xs bg-surface-container-low border border-outline-variant rounded-sm px-gutter-sm py-gutter-xs">
+            <span class="material-symbols-outlined text-on-surface-variant text-[16px]" aria-hidden="true">calendar_month</span>
+            <select id="event-filter" class="bg-transparent border-0 p-0 pr-gutter-lg font-label text-label-sm text-on-surface focus:ring-0">
+              <option value="post-fire">Pascabakar (Nov 2023) vs Pra-Kebakaran</option>
+              <option value="pre-fire">Pra-Kebakaran (Agu 2023)</option>
+              <option value="recovery">Pemulihan +12 Bln (Nov 2024)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- MAIN ANALYTICS CONTENT -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-page-margin py-section flex flex-col gap-gutter-lg">
+
+      <!-- Header -->
+      <section class="flex flex-col md:flex-row md:items-end justify-between gap-gutter-md">
+        <div>
+          <h1 data-design-text-token="headline-lg" class="font-headline text-headline-lg text-on-surface">Pemantauan Tren Vegetasi (Time-Series NDVI &amp; NBR)</h1>
+          <p data-design-text-token="body-md" class="font-body text-body-md text-on-surface-variant">
+            Perbandingan indeks spektral Bulan -1 hingga Bulan +24 pascabakar terhadap baseline hutan gambut sehat KHDTK Tumbang Nusa.
+          </p>
+        </div>
+        <div class="flex flex-wrap items-center gap-gutter-xs">
+          <span data-component-id="badge-error" data-component-type="badge" data-component-variant="error" role="status" class="inline-flex items-center gap-gutter-xs px-gutter-sm py-gutter-xs rounded-full bg-error-container text-on-error-container font-label text-label-sm">
+            <span class="w-2 h-2 rounded-full bg-severity-crimson" aria-hidden="true"></span>
+            <span data-design-text-token="label-sm">Kritis / Stagnan: 2 Zona</span>
+          </span>
+          <span data-component-id="badge-warning" data-component-type="badge" data-component-variant="warning" role="status" class="inline-flex items-center gap-gutter-xs px-gutter-sm py-gutter-xs rounded-full bg-warning-container text-on-warning-container font-label text-label-sm">
+            <span class="w-2 h-2 rounded-full bg-severity-amber" aria-hidden="true"></span>
+            <span data-design-text-token="label-sm">Regenerasi Awal: 3 Zona</span>
+          </span>
+          <span data-component-id="badge-success" data-component-type="badge" data-component-variant="success" role="status" class="inline-flex items-center gap-gutter-xs px-gutter-sm py-gutter-xs rounded-full bg-primary-container text-on-primary-container font-label text-label-sm">
+            <span class="w-2 h-2 rounded-full bg-forest-emerald" aria-hidden="true"></span>
+            <span data-design-text-token="label-sm">Pemulihan Progresif: 4 Zona</span>
+          </span>
+        </div>
+      </section>
+
+      <!-- Time-Series Line Chart Card -->
+      <section class="bg-surface-container-lowest border border-outline-variant rounded p-gutter-lg flex flex-col gap-gutter-md">
+        <header class="flex flex-wrap items-center justify-between gap-gutter-md">
+          <div>
+            <h2 data-design-text-token="title-lg" class="font-title text-title-lg text-on-surface">Kurva Pemulihan Indeks Vegetasi (Bulan -1 s.d. +24)</h2>
+            <p data-design-text-token="body-sm" class="font-body text-body-sm text-on-surface-variant">Rata-rata komposit Sentinel-2 bebas awan per kuartal</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-gutter-md font-label text-label-sm">
+            <span class="flex items-center gap-gutter-xs"><span class="w-4 h-0.5 bg-outline inline-block"></span> Baseline Gambut Sehat (NDVI 0.74)</span>
+            <span class="flex items-center gap-gutter-xs"><span class="w-4 h-1 bg-forest-emerald inline-block rounded-full"></span> NDVI (Rewetting + Tanam)</span>
+            <span class="flex items-center gap-gutter-xs"><span class="w-4 h-1 bg-hydrology-cyan inline-block rounded-full"></span> NBR (Normalized Burn Ratio)</span>
+          </div>
+        </header>
+
+        <!-- Clean Precision SVG Time-Series Chart -->
+        <div class="w-full overflow-x-auto">
+          <svg viewBox="0 0 920 300" class="w-full min-w-[640px] h-auto" role="img" aria-label="Grafik garis time-series NDVI dan NBR Bulan -1 sampai Bulan +24">
+            <!-- Horizontal Grid Lines & Y-Axis Labels -->
+            <g stroke="#E2E8F0" stroke-width="1">
+              <line x1="60" y1="30" x2="890" y2="30"></line>
+              <line x1="60" y1="85" x2="890" y2="85"></line>
+              <line x1="60" y1="140" x2="890" y2="140"></line>
+              <line x1="60" y1="195" x2="890" y2="195"></line>
+              <line x1="60" y1="250" x2="890" y2="250"></line>
+            </g>
+            <g fill="#6F778E" font-family="JetBrains Mono, monospace" font-size="11" text-anchor="end">
+              <text x="50" y="34">0.80</text>
+              <text x="50" y="89">0.60</text>
+              <text x="50" y="144">0.40</text>
+              <text x="50" y="199">0.20</text>
+              <text x="50" y="254">0.00</text>
+            </g>
+
+            <!-- Baseline Healthy Peatland Line (0.74) -->
+            <line x1="60" y1="46" x2="890" y2="46" stroke="#6F778E" stroke-width="1.5" stroke-dasharray="6 4"></line>
+
+            <!-- Fire Event Marker (Month 0) -->
+            <line x1="150" y1="20" x2="150" y2="255" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="4 3"></line>
+            <text x="156" y="28" fill="#B91A24" font-family="Plus Jakarta Sans, sans-serif" font-size="11" font-weight="600">Kejadian Kebakaran (Bln 0)</text>
+
+            <!-- NDVI Curve -->
+            <polyline fill="none" stroke="#10B981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="75,52 150,205 260,192 380,168 500,138 630,112 760,92 880,74"></polyline>
+            <!-- NBR Curve -->
+            <polyline fill="none" stroke="#0284C7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" points="75,88 150,235 260,218 380,195 500,165 630,142 760,122 880,104"></polyline>
+
+            <!-- Data Points (NDVI) -->
+            <g fill="#0F5132" stroke="#FFFFFF" stroke-width="2">
+              <circle cx="75" cy="52" r="4.5"></circle>
+              <circle cx="150" cy="205" r="4.5" fill="#EF4444"></circle>
+              <circle cx="260" cy="192" r="4.5"></circle>
+              <circle cx="380" cy="168" r="4.5"></circle>
+              <circle cx="500" cy="138" r="4.5"></circle>
+              <circle cx="630" cy="112" r="4.5"></circle>
+              <circle cx="760" cy="92" r="4.5"></circle>
+              <circle cx="880" cy="74" r="4.5"></circle>
+            </g>
+
+            <!-- X-Axis Labels -->
+            <g fill="#3F465C" font-family="JetBrains Mono, monospace" font-size="11" text-anchor="middle">
+              <text x="75" y="276">Bln -1</text>
+              <text x="150" y="276">Bln 0</text>
+              <text x="260" y="276">Bln +3</text>
+              <text x="380" y="276">Bln +6</text>
+              <text x="500" y="276">Bln +12</text>
+              <text x="630" y="276">Bln +16</text>
+              <text x="760" y="276">Bln +20</text>
+              <text x="880" y="276">Bln +24</text>
+            </g>
+          </svg>
+        </div>
+      </section>
+
+      <!-- Zone Comparison Table -->
+      <section class="bg-surface-container-lowest border border-outline-variant rounded overflow-hidden">
+        <header class="px-gutter-lg py-gutter-md border-b border-outline-variant flex items-center justify-between">
+          <h2 data-design-text-token="title-lg" class="font-title text-title-lg text-on-surface">Perbandingan Laju Pemulihan Per Zona</h2>
+          <span data-design-text-token="mono-sm" class="font-mono text-mono-sm text-on-surface-variant">Pembaruan: Siklus Sentinel-2 Q4</span>
+        </header>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead class="bg-surface-container-low border-b border-outline-variant font-label text-label-sm text-on-surface-variant uppercase">
+              <tr>
+                <th class="px-gutter-lg py-gutter-sm">Zona &amp; Luas</th>
+                <th class="px-gutter-md py-gutter-sm">NDVI Bln 0</th>
+                <th class="px-gutter-md py-gutter-sm">NDVI Bln +24</th>
+                <th class="px-gutter-md py-gutter-sm">Laju ΔNDVI/Thn</th>
+                <th class="px-gutter-md py-gutter-sm">TMAT Terkini</th>
+                <th class="px-gutter-lg py-gutter-sm">Status Pemulihan</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-outline-variant font-body text-body-md">
+              <tr class="hover:bg-surface-container-low transition-colors">
+                <td class="px-gutter-lg py-gutter-md">
+                  <span class="font-title text-title-md text-on-surface block">TN-04 · Blok Kanal Timur</span>
+                  <span class="font-mono text-mono-sm text-on-surface-variant tabular-nums">314.2 Ha</span>
+                </td>
+                <td class="px-gutter-md py-gutter-md font-mono text-mono-md tabular-nums">0.19</td>
+                <td class="px-gutter-md py-gutter-md font-mono text-mono-md tabular-nums">0.28</td>
+                <td class="px-gutter-md py-gutter-md font-mono text-mono-md text-error tabular-nums">+0.045</td>
+                <td class="px-gutter-md py-gutter-md font-mono text-mono-sm text-secondary tabular-nums">-76 cm</td>
+                <td class="px-gutter-lg py-gutter-md">
+                  <span class="inline-flex items-center gap-gutter-xs px-gutter-sm py-gutter-xs rounded-full bg-error-container text-on-error-container font-label text-label-sm">
+                    <span class="w-2 h-2 rounded-full bg-severity-crimson" aria-hidden="true"></span>
+                    Kritis / Stagnan
+                  </span>
+                </td>
+              </tr>
+              <tr class="hover:bg-surface-container-low transition-colors">
+                <td class="px-gutter-lg py-gutter-md">
+                  <span class="font-title text-title-md text-on-surface block">TN-07 · Kubah Gambut Selatan</span>
+                  <span class="font-mono text-mono-sm text-on-surface-variant tabular-nums">248.0 Ha</span>
+                </td>
+                <td class="px-gutter-md py-gutter-md font-mono text-mono-md tabular-nums">0.24</td>
+                <td class="px-gutter-md py-gutter-md font-mono text-mono-md tabular-nums">0.44</td>
+                <td class="px-gutter-md py-gutter-md font-mono text-mono-md text-on-warning-container tabular-nums">+0.100</td>
+                <td class="px-gutter-md py-gutter-md font-mono text-mono-sm text-secondary tabular-nums">-48 cm</td>
+                <td class="px-gutter-lg py-gutter-md">
+                  <span class="inline-flex items-center gap-gutter-xs px-gutter-sm py-gutter-xs rounded-full bg-warning-container text-on-warning-container font-label text-label-sm">
+                    <span class="w-2 h-2 rounded-full bg-severity-amber" aria-hidden="true"></span>
+                    Regenerasi Awal
+                  </span>
+                </td>
+              </tr>
+              <tr class="hover:bg-surface-container-low transition-colors">
+                <td class="px-gutter-lg py-gutter-md">
+                  <span class="font-title text-title-md text-on-surface block">TN-02 · Sektor Tengah (ANR)</span>
+                  <span class="font-mono text-mono-sm text-on-surface-variant tabular-nums">195.4 Ha</span>
+                </td>
+                <td class="px-gutter-md py-gutter-md font-mono text-mono-md tabular-nums">0.35</td>
+                <td class="px-gutter-md py-gutter-md font-mono text-mono-md tabular-nums">0.64</td>
+                <td class="px-gutter-md py-gutter-md font-mono text-mono-md text-primary tabular-nums">+0.145</td>
+                <td class="px-gutter-md py-gutter-md font-mono text-mono-sm text-secondary tabular-nums">-26 cm</td>
+                <td class="px-gutter-lg py-gutter-md">
+                  <span class="inline-flex items-center gap-gutter-xs px-gutter-sm py-gutter-xs rounded-full bg-primary-container text-on-primary-container font-label text-label-sm">
+                    <span class="w-2 h-2 rounded-full bg-forest-emerald" aria-hidden="true"></span>
+                    Pemulihan Progresif
+                  </span>
+                </td>
+              </tr>
+              <tr class="hover:bg-surface-container-low transition-colors">
+                <td class="px-gutter-lg py-gutter-md">
+                  <span class="font-title text-title-md text-on-surface block">TN-01 · Hutan Referensi</span>
+                  <span class="font-mono text-mono-sm text-on-surface-variant tabular-nums">410.0 Ha</span>
+                </td>
+                <td class="px-gutter-md py-gutter-md font-mono text-mono-md tabular-nums">0.73</td>
+                <td class="px-gutter-md py-gutter-md font-mono text-mono-md tabular-nums">0.75</td>
+                <td class="px-gutter-md py-gutter-md font-mono text-mono-md text-primary tabular-nums">+0.010</td>
+                <td class="px-gutter-md py-gutter-md font-mono text-mono-sm text-secondary tabular-nums">-16 cm</td>
+                <td class="px-gutter-lg py-gutter-md">
+                  <span class="inline-flex items-center gap-gutter-xs px-gutter-sm py-gutter-xs rounded-full bg-primary-container text-on-primary-container font-label text-label-sm">
+                    <span class="w-2 h-2 rounded-full bg-forest-emerald" aria-hidden="true"></span>
+                    Pemulihan Progresif
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+
+</body></html>

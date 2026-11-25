@@ -1,0 +1,69 @@
+// use in https://code.earthengine.google.com/
+
+function maskS2clouds(image) {
+  var qa = image.select('QA60');
+  var cloudBitMask = 1 << 10;
+  var cirrusBitMask = 1 << 11;
+
+  var mask = qa.bitwiseAnd(cloudBitMask).eq(0)
+      .and(qa.bitwiseAnd(cirrusBitMask).eq(0));
+
+  // Skala reflektan 0.0 - 1.0 (bagus untuk NDVI, NBR, dNBR)
+  return image.updateMask(mask).divide(10000);
+}
+
+// 1. Tentukan area (contoh kotak kecil di sekitar Tumbang Nusa, Kalteng)
+// Format: [lon_min, lat_min, lon_max, lat_max] -> ubah sesuai area kamu
+var aoi = ee.Geometry.Rectangle([113.95, -2.52, 114.15, -2.35]);
+Map.centerObject(aoi, 11);
+
+// 2. Ambil data PRE (sebelum kebakaran) dan POST (sesudah kebakaran)
+// Ubah rentang tanggal di bawah ini sesuai waktu kejadian kebakaran kamu
+var preImg = ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED')
+  .filterBounds(aoi)
+  .filterDate('2025-06-01', '2025-07-15')
+  .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 30))
+  .map(maskS2clouds)
+  .median()
+  .select(['B4', 'B8', 'B12'])
+  .clip(aoi);
+
+var postImg = ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED')
+  .filterBounds(aoi)
+  .filterDate('2025-08-15', '2025-09-30')
+  .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 30))
+  .map(maskS2clouds)
+  .median()
+  .select(['B4', 'B8', 'B12'])
+  .clip(aoi);
+
+// Tampilkan di peta untuk cek visual sebelum ekspor
+Map.addLayer(preImg, {bands: ['B4', 'B8', 'B12'], min: 0.02, max: 0.4}, 'PRE B4-B8-B12');
+Map.addLayer(postImg, {bands: ['B4', 'B8', 'B12'], min: 0.02, max: 0.4}, 'POST B4-B8-B12');
+
+// 3. Ekspor tiap band ke Google Drive (scale 20m & CRS sama agar grid seragam)
+var bands = ['B4', 'B8', 'B12'];
+
+bands.forEach(function(b) {
+  Export.image.toDrive({
+    image: preImg.select(b),
+    description: 'pre_' + b,
+    folder: 'gee_burn_severity',
+    fileNamePrefix: 'pre_' + b,
+    region: aoi,
+    scale: 20,
+    crs: 'EPSG:4326',
+    maxPixels: 1e9
+  });
+
+  Export.image.toDrive({
+    image: postImg.select(b),
+    description: 'post_' + b,
+    folder: 'gee_burn_severity',
+    fileNamePrefix: 'post_' + b,
+    region: aoi,
+    scale: 20,
+    crs: 'EPSG:4326',
+    maxPixels: 1e9
+  });
+});
